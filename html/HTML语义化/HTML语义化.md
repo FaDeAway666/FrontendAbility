@@ -106,3 +106,63 @@ HTML5扩展了一些文本级语义化标签，以及一些扩展的语义标准
 
 ## 微数据
 
+为了方便机器识别而产生的一种标记内容，用于描述特定类型的欣喜，可以丰富搜索引擎的网络摘要
+
+```html
+<div>
+  我的名字是王富强，但大家叫我小强。我的个人首页是：
+  <a href="http://www.example.com">www.example.com</a>
+  我住在上海市富贵新村。我是工程师，目前在财富科技公司上班。
+</div>
+
+<!--使用微数据-->
+<div itemscope itemtype="http://data-vocabulary.org/Person">
+  我的名字是<span itemprop="name">王富强</span>，
+  但大家叫我<span itemprop="nickname">小强</span>。
+  我的个人首页是：
+  <a href="http://www.example.com" itemprop="url">www.example.com</a>
+  我住在上海市富贵新村。我是<span itemprop="title">工程师</span>，
+  目前在<span itemprop="affiliation">财富科技公司</span>上班。
+</div>
+```
+
+上例中的自定义属性有：
+
+**itemscope**
+
+定义一组名值对，称为项
+
+**itemprop="属性名"**
+
+添加一个数据项属性，属性名可以是一个单词或一个URL，与元素包含的文本值相关
+
+- 对于大部分元素，属性名值就是元素标签里面的文本值（不是所有标签）。
+- 对于有URL属性的元素，该值就是URL（如`<img src="">`, `<a href="">`, `<object data="">`等）。
+- 对于`<time>`元素，该值就是`datetime=""`属性。
+- 对于`<meta itemprop="" content="">`， 该值就是`content=""`属性。
+
+**itemref**
+
+允许微数据项通过指向特定ID（含有需要属性的元素）包含非后代属性
+
+```html
+<p itemscope itemref="band-members">后天我要去看<span itemprop="name">
+S˙H˙E</span>的演唱会，好兴奋哈！</p>
+……
+<span id="band-members" itemprop="members" itemscope>S˙H˙E 的成员是
+  <span itemprop="name">任家萱</span>，
+  <span itemprop="name">田馥甄</span>和
+  <span itemprop="name">陈嘉桦</span>.</span>
+```
+
+**itemtype**
+
+通过设置itemtype，可以给微数据项制定一种类型，itemtype的值为一个URL，代表了微数据使用的词汇
+
+```html
+<p itemscope itemtype="http://schema.org/MusicGroup">后天我要去看<span itemprop="name">
+S˙H˙E</span>的演唱会，好兴奋哈！</p>
+```
+
+微数据保证页面内容显示良好可以通过工具转化为JSON，从某种意义上讲微数据的本质就是JSON
+
