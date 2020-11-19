@@ -1,3 +1,112 @@
+# HTML SGML XML
+
+SGML 是20世纪60年代，由IBM最早使用的一种数据描述语言
+
+XML是SGML 的一个子集
+
+HTML在刚诞生的年代，也是使用了SGML子集的定义方式，拥有符合SGML的DTD（document type definition），后期W3C对其做了XML化的尝试，于是出现了XHTML的版本
+
+## DTD
+
+DTD是文档类型定义，可以用来定义合法的XML文档构建模块，使用一系列合法元素来定义文档结构。
+
+```xml-dtd
+<?xml version="1.0"?>
+<!DOCTYPE note [
+  <!ELEMENT note (to,from,heading,body)>
+  <!ELEMENT to      (#PCDATA)>
+  <!ELEMENT from    (#PCDATA)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body    (#PCDATA)>
+]>
+<note>
+  <to>George</to>
+  <from>John</from>
+  <heading>Reminder</heading>
+  <body>Don't forget the meeting!</body>
+</note>
+```
+
+*!DOCTYPE note* (第二行)定义此文档是 *note* 类型的文档。
+
+*!ELEMENT note* (第三行)定义 *note* 元素有四个元素："to、from、heading,、body"
+
+*!ELEMENT to* (第四行)定义 *to* 元素为 "#PCDATA" 类型
+
+*!ELEMENT from* (第五行)定义 *from* 元素为 "#PCDATA" 类型
+
+*!ELEMENT heading* (第六行)定义 *heading* 元素为 "#PCDATA" 类型
+
+*!ELEMENT body* (第七行)定义 *body* 元素为 "#PCDATA" 类型
+
+
+
+所有XML(HTML)文档均由以下几个简单模块构成：
+
+- 元素
+
+  元素是XML和HTML文档的主要构建模块
+
+  HTML 元素的例子是 "body" 和 "table"。XML 元素的例子是 "note" 和 "message" 。元素可包含文本、其他元素或者是空的。空的 HTML 元素的例子是 "hr"、"br" 以及 "img"。
+
+- 属性
+
+  属性可提供有关元素的额外信息
+
+  ```html
+  <img src="computer.gif" />
+  ```
+
+- 实体
+
+  实体是用于定义引用普通文本或特殊字符的快捷方式的变量。
+
+  实体引用是对实体的引用
+
+  实体可在内部或外部进行声明
+
+  内部实体声明
+
+  ```dtd
+  <!ENTITY writer "Bill Gates">
+  <!ENTITY copyright "Copyright W3School.com.cn">
+  ```
+
+  外部实体声明
+
+  ```dtd
+  <!ENTITY writer SYSTEM "http://www.w3school.com.cn/dtd/entities.dtd">
+  <!ENTITY copyright SYSTEM "http://www.w3school.com.cn/dtd/entities.dtd">
+  ```
+
+  实体的引用
+
+  ```xml
+  <author>&writer;&copyright;</author>
+  ```
+
+  HTML几个常规实体引用
+
+  | 实体引用 | 字符 |
+  | :------- | :--- |
+  | `&lt;`   | <    |
+  | `&gt;`   | >    |
+  | `&amp;`  | &    |
+  | `&quot;` | "    |
+  | `&apos;` | '    |
+
+- PCDATA
+
+  parsed character data 被解析的字符
+
+  可想象成元素的开始标签与结束标签之间的文本
+
+  这些文本是会被解析的文本，会被解析器检查实体以及标记
+
+- CDATA
+
+  不会被解析器解析的文本，这些文本中的标签不会当做标记来对待，实体也不会展开解析
+
 # 元素类型
 
 ## 行内元素
