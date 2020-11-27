@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>event API</title>
+</head>
+<body>
+  <div id="red" style="width: 100%; height: 200px; background-color: lightcoral; position: relative;">
+    父元素
+    <div id="blue" style="width: 50%; height: 100px; background-color: lightblue;
+     position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">子元素</div>
+  </div>
+  <div id="scroll" style="width: 100px; height: 100px; border: 1px solid black;
+    overflow-y: auto;">
+    测试文本测试文本测试文本测试文本测试文本测试文本
+    测试文本测试文本测试文本测试文本测试文本测试文本
+    测试文本测试文本测试文本测试文本测试文本测试文本
+    测试文本测试文本测试文本测试文本测试文本测试文本
+  </div>
+</body>
+
+<script>
+  alert('打开控制台，查看元素点击后的效果')
+
+  var red = document.getElementById('red');
+  var blue = document.getElementById('blue');
+  var scr = document.getElementById('scroll');
+
+  red.addEventListener('click', function() {
+    console.log('父元素被点击')
+  }, {
+    capture: true,
+    once: true
+  })
+
+  blue.addEventListener('click', function() {
+    console.log('子元素被点击');
+  })
+
+  red.addEventListener('click', function() {
+    console.log('父元素被点击2')
+  })
+
+  blue.addEventListener('click', function() {
+    console.log('子元素被点击2')
+  })
+
+  scr.addEventListener('scroll', function() {
+    console.log('scroll')
+  }, { passive: true })
+</script>
+</html>
