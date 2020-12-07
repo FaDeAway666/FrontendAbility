@@ -176,7 +176,7 @@ const obj = {
     getName () {
         console.log(this.name)
     }, // 等价于 getName: function() {}
-    [Math.random()]: 'random' // 计算属性名
+    [Math.random()]: 'random' // 计算属性名，在方括号内可以使用表达式或变量
 }
 console.log(obj)
 obj.getName()
@@ -339,3 +339,269 @@ console.log(Reflect.ownKeys(obj))
 ```
 
 Reflect提供的API，相对于ES2015之前的实现相同功能的不同API或操作符，更为规范化
+
+## class
+
+用于声明类型
+
+在没有class之前，是使用构造函数，并在原型上加方法实现类
+
+```js
+class Person {
+    constructor(name) {
+        this.name = name
+    }
+
+    static create(name) { // static关键字添加静态方法
+        return new Person(name)
+    }
+
+    say() {
+        console.log(`i am ${this.name}`)
+    }
+}
+// 类的继承
+class Student extends Person {
+    constructor(name, number) {
+        super(name) // super关键字调用父类的构造函数
+        this.number = number
+    }
+
+    study() {
+        super.say()
+        console.log('i am studying')
+    }
+}
+
+const p = Person.create('pb')
+p.say()
+const s = new Student('wsq', 1010)
+s.study()
+```
+
+如果子类中定义了构造函数，必须先调用`super()`才能使用this，super关键字还可以调用父类的原型函数
+
+类不能继承常规对象（不可构造的），可以改用`Object.setPrototypeOf()`
+
+```js
+var Animal = {
+  speak() {
+    console.log(this.name + ' makes a noise.');
+  }
+};
+
+class Dog {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+Object.setPrototypeOf(Dog.prototype, Animal);// 如果不这样做，在调用speak时会返回TypeError
+
+var d = new Dog('Mitzie');
+d.speak(); // Mitzie makes a noise.
+```
+
+## Set和Map
+
+Set是ES2015的一种新的数据结构，可以理解为集合，Set内部成员**不允许重复**，允许遍历
+
+使用方法为：
+
+```js
+const s = new Set()
+s.add(1).add(2).add(3)
+console.log(s)
+
+console.log(s.size)
+console.log(s.has(2))
+console.log(s.delete(1))
+console.log(s.clear(), s)
+```
+
+应用：数组去重
+
+```js
+const arr = [1,1,2,2,3]
+
+// const result = Array.from(new Set(arr))
+const result = [...new Set(arr)]
+console.log(result)
+```
+
+Map是键值对类型的一种对象，与Object相比，可以使用任意类型作为键，而Object只能使用字符串作为键
+
+```js
+const map = new Map()
+
+const tom = {
+    name: 'tom'
+}
+map.set(tom, 100) // 使用object类型作为键
+console.log(map)
+
+map.has(tom)
+map.get(tom)
+map.delete(tom)
+
+map.forEach((value, key) => {
+    console.log(value, key)
+})
+```
+
+## Symbol
+
+ES2015之前，对象的属性都是字符串，而字符串是有可能重复的
+
+Symbol是一种新增的基础类型，表示独一无二的值，使用Symbol作为属性名，可以避免重复，这也是Symbol目前最主要的作用
+
+```js
+console.log(Symbol() === Symbol()) // false
+console.log(Symbol(1),Symbol('foo')) // Symbol(1) Symbol(foo)
+```
+
+也可以用Symbol来模拟对象的私有属性
+
+```js
+/*---------------a.js---------------*/
+const name = Symbol()
+const Person {
+	[name]: 'pb',
+	say() {
+		console.log(this[name])
+	}
+}
+
+/*-----------b.js-------------------*/
+console.log(Person.name) // undefined,不能调用之前的symbol了
+console.log(Person.say())
+
+```
+
+使用Symbol.for()和Symbol.keyFor()方法，可以从全局的symbol注册表设置和取得symbol
+
+```js
+const s1 = Symbol.for('foo')
+console.log(s1 === Symbol.for('foo')) // true
+console.log(Symbol.keyFor(s1)) // foo
+```
+
+如果一个对象中使用了Symbol作为属性，通过一般的遍历方法，例如Object.keys()/JSON.stringify()，这个属性是会被忽略的，需要使用Object.getOwnPropertySymbols()方法，可获得该对象使用了Symbol类型的属性的数组
+
+```js
+const Person = {
+    [Symbol('bar')]: 'bar',
+    name: 'foo'
+}
+
+console.log(Object.getOwnPropertySymbols(Person)) // [Symbol(foo)]
+```
+
+## 迭代
+
+### for...of循环
+
+相比forEach，可以用break 终止遍历，也可以用来遍历伪数组（arguments）
+
+可以遍历Set和Map
+
+### Iterable接口
+
+实现Iterable接口是for...of的前提
+
+可以发现，Array，Set，Map等都实现了iterable接口
+
+```js
+const set = new Set(['foo','bar','baz'])
+
+const iterator = set[Symbol.iterator]()
+
+console.log(iterator.next()) // { value: 'foo', done: false }
+console.log(iterator.next()) // { value: 'bar', done: false }
+console.log(iterator.next()) // { value: 'baz', done: false }
+console.log(iterator.next()) // { value: undefined, done: true }
+```
+
+可用代码实现一个迭代器接口
+
+```js
+const obj = {
+    store: ['foo', 'bar', 'baz'],
+    [Symbol.iterator]: function () {
+        const self = this
+        let index = 0
+        return {
+            next: function () {
+                let result = {
+                    value: self.store[index],
+                    done: index >= self.store.length
+                }
+                index++;
+                return result
+            }
+        }
+    }
+}
+
+for(let item of obj) {
+    console.log(item)
+}
+```
+
+实现迭代器的意义在于，**对外提供统一遍历接口，让外部不需要关心数据结构**
+
+## 生成器
+
+为了解决异步编程回调函数嵌套的问题，提供更好的异步编程解决方案
+
+语法
+
+```js
+function * foo() {
+    yield 1
+    yield 2
+}
+
+const result = foo()
+console.log(result.next())
+console.log(result.next())
+```
+
+# ES2016
+
+是一个小版本
+
+## Array.prototype.includes
+
+判断数组当中是否存在制定的元素
+
+## 指数运算符
+
+```
+console.log(Math.pow(2,10))
+
+console.log(2 ** 10)
+```
+
+# ES2017
+
+也是一个小版本
+
+## Object扩展
+
+Object.values()
+
+Object.enties()
+
+Object.getOwnPropertyDescriptors()
+
+## String扩展
+
+String.prototype.padStart
+
+String.prototype.padEnd
+
+## async和await
+
+
+

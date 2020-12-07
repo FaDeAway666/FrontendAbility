@@ -1,30 +1,26 @@
 const obj = {
-    name: 'wsq',
-    age: 18
+    store: ['foo', 'bar', 'baz'],
+    [Symbol.iterator]: function () {
+        const self = this
+        let index = 0
+        return {
+            next: function () {
+                let result = {
+                    value: self.store[index],
+                    done: index >= self.store.length
+                }
+                index++;
+                return result
+            }
+        }
+    }
 }
 
-const proxy = new Proxy(obj, {
-    get(target, property) {
-        return target[property] ? target[property] : 'none'
-    },
-    set(target, property, value) {
-        target[property] = value
-    }
-})
+function * foo() {
+    yield 1
+    yield 2
+}
 
-const arr = []
-
-const arrProxy = new Proxy(arr, {
-    set(target, property, value) {
-        target[property] = value
-        return true // 写入成功
-    }
-})
-
-
-console.log('name' in obj)
-console.log(Reflect.has(obj, 'name'))
-console.log(Object.keys(obj))
-console.log(Reflect.ownKeys(obj))
-// arrProxy.push(1)
-// console.log(arr)
+const result = foo()
+console.log(result.next())
+console.log(result.next())
