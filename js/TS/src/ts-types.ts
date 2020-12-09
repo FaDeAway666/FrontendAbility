@@ -44,4 +44,14 @@ const func2: (a: number) => number = function (a:number): number {
 }
 export {}
 
+const nums = [11,22,3,33]
+
+const res = nums.find(i => i > 0)
+
+// const square = res * res // 提示res可能是undefined
+
+const num1 = res as number
+
+const num2 = <number>res // jsx下不能使用
+
 
