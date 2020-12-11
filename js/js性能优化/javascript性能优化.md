@@ -31,7 +31,7 @@ JS的内存管理是自动的，JS引擎会将垃圾（不可达对象）占据�
 JS中的可达对象：
 
 - 可以访问到的对象就是可达对象（通过引用、作用域链访问）
-- 可达的标准就是从根触发是否能够被找到
+- 可达的标准就是从根出发是否能够被找到
 - JS中的根可以理解为是全局变量对象
 
 GC就是垃圾回收机制的简写，GC算法工作的时候，可以找到内存中的垃圾，并释放、回收空间。
@@ -131,6 +131,8 @@ V8将内存空间分成两份，小空间用于新生代对象（64位系统有3
 
 老生代回收主要采用标记清除、标记整理、增量标记的算法，首先使用标记清除进行垃圾空间的回收，途中会采用标记整理进行空间优化，也会采用增量标记进行效率优化
 
+老生代的存储空间设有上线，64位系统下是1.4G，32位系统下是700M
+
 对比：
 
 - 新生代垃圾回收采用了赋值算法，使用空间换取时间
@@ -201,3 +203,92 @@ V8将内存空间分成两份，小空间用于新生代对象（64位系统有3
 
 - TimeLine中内存时序频繁的上升下降
 - 任务管理器中数据频繁地增加减小
+
+## JS代码优化
+
+可以使用JSBench工具来观察代码优化前后的性能对比，网址https://jsbench.me/
+
+### 慎用全局变量
+
+- 全局变量定义在全局执行上下文，是所有作用域链的顶端
+- 全局执行上下文一直存在于上下文执行栈，直到程序退出
+- 如果某个局部作用域出现了同名变量则会污染全局
+
+在实现相同的功能时，使用全局变量的效率不如使用局部变量
+
+### 缓存全局变量
+
+将使用中无法避免的全局变量缓存到局部，对性能会有少量的提升
+
+```js
+function getBtn() {
+	let btn1 = document.getElementById('btn1')
+	let btn3 = document.getElementById('btn3')
+	let btn5 = document.getElementById('btn5')
+	let btn7 = document.getElementById('btn7')
+	let btn9 = document.getElementById('btn9')
+}
+
+function getBtn() { 
+	let d = document // 用局部变量缓存全局对象
+	let btn1 = d.getElementById('btn1')
+	let btn3 = d.getElementById('btn3')
+	let btn5 = d.getElementById('btn5')
+	let btn7 = d.getElementById('btn7')
+	let btn9 = d.getElementById('btn9')
+}
+```
+
+### 在原型上新增实例对象需要的方法
+
+在原型上新增方法，比在构造函数中新增方法，性能要稍好一些
+
+原因是在创建多个实例的时候，使用构造函数创建方法，每个实例都会在内存空间中存在这个方法，而使用原型创建方法，实例调用方法时会从原型上查找，而内存空间中没有，这样就节省了内存空间
+
+```js
+var fn = function() {
+	this.foo = function() {
+        console.log('pbpb')
+    }
+}
+
+var fn2 = function() {}
+fn2.prototype.foo = function() {
+    console.log('pbpb')
+}
+```
+
+### 闭包陷阱
+
+- 闭包容易造成内存泄漏
+- 不要为了闭包而闭包
+
+尽量减少闭包的使用，如果使用了闭包，要在不使用的时候，进行内存释放
+
+### 循环优化
+
+for循环在指定循环条件的时候，如果有计算或者调用方法的地方，需要将这些条件取出来成为一个变量，不要每次循环的时候都去计算
+
+```js
+for(let i=0; i < calc(something); i++)
+
+// 改进后
+let res = calc(something)
+for(let i=0; i < res; i++)
+```
+
+对于forEach for for...in之间的性能，forEach 的性能最好，如果只是单纯遍历，选择forEach最佳
+
+### DOM节点添加优化
+
+节点的添加操作会有回流和重绘，需要使用DocumentFragment添加后在一次性append到DOM中
+
+```js
+const fragment = document.createDocumentFragment()
+for(let i=0; i < 10; i++) {
+    let p = document.createElement(p)
+    fragment.append(p)
+}
+document.append(fragment)
+```
+
