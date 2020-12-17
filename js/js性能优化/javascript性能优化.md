@@ -292,3 +292,47 @@ for(let i=0; i < 10; i++) {
 document.append(fragment)
 ```
 
+### 其他操作
+
+- 减少判断层级
+
+- 减少作用域链查找层级
+
+- 减少声明及语句数
+
+- 减少数据读取次数
+
+  例如
+
+  ```js
+  return obj.name == 'pb'
+  
+  // 不如
+  name = obj.name
+  return name == 'pb'
+  ```
+
+- 字面量与构造式
+
+  字面量：
+
+  ```js
+  str = 'pb'
+  obj = {
+  	name: 'pb',
+  	age: 24
+  }
+  ```
+
+  构造式
+
+  ```js
+  str = new String('pb')
+  obj = new Object({
+  	name: 'pb',
+  	age: 24
+  })
+  ```
+
+  对于基本类型而言，字面量的效率远高于构造式，对于引用类型而言，差别不大，字面量效率略高一些
+
