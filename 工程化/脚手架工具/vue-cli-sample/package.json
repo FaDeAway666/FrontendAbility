@@ -1,5 +1,5 @@
 {
-  "name": "cli-sample",
+  "name": "vue-cli-sample",
   "version": "1.0.0",
   "bin": "cli.js",
   "main": "index.js",
