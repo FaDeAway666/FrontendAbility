@@ -16,9 +16,10 @@ tips：让配置文件支持智能提示的方法
 // ./webpack.config.js
 /** @type {import('webpack').Configuration} */
 const config = {
-  entry: './src/index.js',
+  entry: './src/index.js', // 相对路径时，./不能省略
   output: {
-    filename: 'bundle.js'
+    path: path.join(__dirname, 'dist') // 必须是绝对路径
+    filename: 'bundle.js' // 可以包含文件夹
   }
 }
 module.exports = config
@@ -64,7 +65,7 @@ loader的使用方式：
 ```js
 // ./webpack.config.js
 module.exports = {
-  entry: './src/main.css',
+  entry: './src/main.css', 
   output: {
     filename: 'bundle.js'
   },
@@ -420,7 +421,142 @@ module.exports = merge(common, {
 
 ## 优化
 
+**DefinePlugin：为代码注入全局成员**
 
+```js
+const webpack = require('webpack')
+
+module.exports = {
+    plugins: [
+        new webpack.DefinePlugin({
+            BASE_URL: '"https://api.example.com"' // 传入的值应该是一个代码片段
+        })
+    ]
+}
+```
+
+**tree shaking：**
+
+去除未引用的代码（dead-code）
+
+```js
+module.exports = {
+    optimization: {
+        usedExports: true, // 只导出外部使用过的成员，标记枯树叶
+        concatenateModules: true, // 尽可能将模块合并输出到一个函数当中
+        minimize: true // 压缩代码，摇掉树叶
+    }
+}
+```
+
+使用babel，会导致tree shaking失效，是因为交给webpack处理的代码必须要使用ES Module，最新版本的babel-loader不会去转换ESM代码，如果要指定，使用以下写法
+
+```js
+{
+    rules: [
+        {
+            test: /\.js$/,
+            use: {
+                loader: 'babel-loader',
+                options: {
+                  presets: [
+                      ['@babel/preset-env', { modules: false}]
+                  ]
+              	}
+            }
+        }
+    ]
+}
+```
+
+**sideEffects：副作用**
+
+模块执行时，除了导出成员之外所做的事情称为副作用。一般用于npm包标记是否有副作用
+
+```js
+module.exports = {
+	optimization: {
+        sideEffects: true // 检查package.json中是否有sideEffects字段，如果为false，说明当前代码没有副作用，将不参与打包，如果有值，则会把值对应的文件打包进结果中
+    }
+}
+```
+
+**code splitting：代码分割**
+
+最终所有的代码都会被打包到一起，会使得最后的结果是一个很大的文件。
+
+可能启动的时候并不需要加载所有的资源，诞生的需求就是对代码进行分包并按需加载
+
+有两种方式实现：
+
+- 多入口打包
+- 动态导入
+
+多入口打包，适用于多页应用，一个页面对应一个打包入口，公共部分单独提取
+
+使用多个HTMLWebpackPlugin
+
+```js
+module.exports = {
+    entry: {
+        index: 'src/index.js', // 配置成对象
+        album: 'src/album.js'
+    },
+    output: {
+        filename: '[name].bundle.js'
+    }
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: 'src/index.html',
+            filename: 'index.html',
+    		chunks: ['index'] // 分配指定的包
+        })
+        new HtmlWebpackPlugin({
+        	template: 'src/album.html',
+        	filename: 'album.html',
+            chunks: ['album']
+        })
+    ]
+}
+```
+
+多入口打包会有一个问题，就是分出来的包可能会引用相同的模块或配置，这时可以使用splitChunks来解决
+
+```js
+module.exports = {
+    optimization: {
+        splitChunks: {
+            chunks: 'all' // 提取所有公共模块到一个文件
+        }
+    }
+}
+```
+
+动态导入的分包更加灵活，当需要的时候再去加载模块，所有动态导入的模块都会自动分包，不需要进行任何配置 
+
+使用import函数进行动态导入
+
+```js
+import(/* webpackChunkName: 'posts' */'./posts').then() // 动态导入，分包的文件名为posts
+```
+
+MiniCssExtractPlugin：提取css到单个文件
+
+可以实现css的按需加载
+
+如果css文件没有超过150k，最好不要使用
+
+可以再使用optimize-css-assets-webpack-plugin来压缩提取出来的代码
+
+**文件名使用hash**
+
+针对资源缓存，如果设置时间过短，则没有很好地起到缓存的作用，如果时间过长，途中资源发生更新，也没有办法及时更新资源
+
+webpack中的文件名支持三种hash方式：[hash]/[chunkhash]/[contenthash]
+
+其中hash是只要有文件改变，所有文件的hash值都会改变；chunkhash是某个文件改变，该文件的hash值才会改变；contenthash是文件的内容改变，文件的hash才改变
+
+生产环境中最适合使用的，应该是chunkhash模式，还可以使用[chunkhash:number]来指定hash值的位数
 
 # 开发中使用Webpack遇到的一些问题
 
