@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue-demo</title>
+</head>
+<style>
+    div {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+</style>
+<body>
+    <div id="app">
+        <div>{{ title }}</div>
+        <div v-text="value"></div>
+        <div>
+            <input v-model="value" type="text">
+        </div>
+    </div>
+</body>
+<script src="./js/vue.js"></script>
+<script src="./js/observer.js"></script>
+<script src="./js/compiler.js"></script>
+<script src="./js/dep.js"></script>
+<script src="./js/watcher.js"></script>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            title: 'Hello Vue',
+            person: {
+                name: 'pb',
+                age: 18
+            },
+            value: 'abc'
+        }
+    })
+</script>
+</html>
