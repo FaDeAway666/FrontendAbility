@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "dev": "yarn webpack serve --open"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^4.5.1",
+    "webpack": "^5.11.1",
+    "webpack-cli": "^4.3.1",
+    "webpack-dev-server": "^3.11.1"
+  },
+  "dependencies": {
+    "snabbdom": "^2.1.0"
+  },
+  "name": "snabbdom-demo",
+  "version": "1.0.0",
+  "main": "main.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
