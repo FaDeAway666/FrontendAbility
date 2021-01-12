@@ -10,9 +10,7 @@ class Compiler {
 
     // 遍历el，根据其子节点的类型进行递归编译
     compile (el) {
-        console.log(el)
         Array.from(el.childNodes).forEach(node => {
-            console.log(node.nodeType)
             if (this.isTextNode(node)) {
                 this.compileText(node)
             }
@@ -43,7 +41,6 @@ class Compiler {
 
     // 编译元素节点，处理指令
     compileElement (node) {
-        console.log (node.attributes)
         const attributes = Array.from(node.attributes)
         if (attributes.length) {
             attributes.forEach(attr => {
@@ -56,8 +53,14 @@ class Compiler {
 
     // 根据指令调用不同的指令处理函数
     update (node, key, attr) {
-        let fn = this[`${attr}Updater`]
-        fn && fn.call(this, node, key, this.vm[key]) // 使用call是为了继承this
+        if (attr.indexOf('on') > -1) {
+            let event = attr.split(':')[1];
+            console.log(event, 'event')
+            this.onUpdater.call(this, node, event, key)
+        } else {
+            let fn = this[`${attr}Updater`]
+            fn && fn.call(this, node, key, this.vm[key]) // 使用call是为了继承this
+        }
     }
 
     // v-text 指令处理
@@ -81,6 +84,26 @@ class Compiler {
         // 双向绑定，注册一个input事件
         node.addEventListener('input', () => {
             this.vm[key] = node.value
+        })
+    }
+
+    // v-on指令
+    onUpdater (node, event, handler) {
+        new Watcher(this.vm, handler, (newHandler) => {
+            this.vm[handler] = newHandler
+        })
+
+        node.addEventListener(event, () => {
+            this.vm[handler]()
+        })
+    }
+
+    // v-html指令
+    htmlUpdater (node, key, value) {
+        node.innerHTML = value
+
+        new Watcher(this.vm, key, newValue => {
+            this.vm[key] = newValue
         })
     }
 

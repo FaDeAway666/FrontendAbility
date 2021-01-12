@@ -13,6 +13,8 @@ class Vue {
 
         this._proxyData(this.$data)
 
+        this._setMethods(this.$options.methods)
+
         new Observer(this.$data)
 
         new Compiler(this)
@@ -29,6 +31,24 @@ class Vue {
                 set(newValue) {
                     if (data[key] === newValue) return
                     data[key] = newValue
+                }
+            })
+        })
+    }
+
+    _setMethods (methods) {
+        console.log(methods)
+        if (!methods) return
+        Object.keys(methods).forEach(key => {
+            Object.defineProperty(this, key, {
+                enumerable: true, // 可枚举不能漏
+                configurable: true, // 可配置也不能漏
+                get() {
+                    return methods[key]
+                },
+                set(newValue) {
+                    if (methods[key] === newValue) return
+                    methods[key] = newValue
                 }
             })
         })

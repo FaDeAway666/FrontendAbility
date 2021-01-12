@@ -18,6 +18,15 @@
         <div>
             <input v-model="value" type="text">
         </div>
+        <div>
+            <h3>v-on实现</h3>
+            <button v-on:click="add">add Count</button>
+            <span>{{ count }}</span>
+        </div>
+        <div>
+            <h3>v-html</h3>
+            <div v-html="htmlText"></div>
+        </div>
     </div>
 </body>
 <script src="./js/vue.js"></script>
@@ -34,7 +43,14 @@
                 name: 'pb',
                 age: 18
             },
-            value: 'abc'
+            value: 'abc',
+            count: 0,
+            htmlText: '<div>haha, I am htmlString<h5>I\'m subString</h5></div>'
+        },
+        methods: {
+            add() {
+                this.count++;
+            }
         }
     })
 </script>
