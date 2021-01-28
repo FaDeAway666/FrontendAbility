@@ -79,7 +79,7 @@ hash模式：
 
 history模式：
 
-- 通过history.pushState()改变地址栏，不会引起浏览器刷新
+- 通过history.pushState()改变地址栏，**不会引起浏览器刷新**
 - 监听popstate事件，可以记录地址栏地址的变化
 - 根据当前路由地址找到对应的组件重新渲染
 

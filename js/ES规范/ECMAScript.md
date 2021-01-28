@@ -301,7 +301,7 @@ Proxy对比defineProperty的优势在于
 
   [`new`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new) 操作符的捕捉器。
 
-- Proxy 对数组对象的监听更加支持
+- Proxy **对数组对象的监听更加支持**
 
   之前通过重写数组的方法来达到对数组的监视
 
@@ -494,7 +494,7 @@ const Person = {
     name: 'foo'
 }
 
-console.log(Object.getOwnPropertySymbols(Person)) // [Symbol(foo)]
+console.log(Object.getOwnPropertySymbols(Person)) // [Symbol(bar)]
 ```
 
 ## 迭代
@@ -550,7 +550,7 @@ for(let item of obj) {
 
 实现迭代器的意义在于，**对外提供统一遍历接口，让外部不需要关心数据结构**
 
-## 生成器
+## 生成器Generator
 
 为了解决异步编程回调函数嵌套的问题，提供更好的异步编程解决方案
 
