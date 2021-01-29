@@ -265,7 +265,7 @@ AST：抽象语法树，使用对象的形式描述树形的代码结构，vue�
    2. 调用baseCompile(template.trim(), finalOptions)
 3. baseCompile(template.trim(), finalOptions)
    1. 调用parse()(来自于html-parse.js)，将template转换成AST
-   2. 调用optimize()，标记AST 中的静态子树，一旦检测到静态子树，将AST的static属性设置为true，则不需要再每次重新渲染的时候重新生成节点，在patch阶段，也会跳过静态子树
+   2. 调用optimize()，标记AST 中的静态子树，一旦检测到静态子树，将AST的static属性设置为true，则不需要再每次重新渲染的时候重新生成节点，在patch阶段，也会跳过静态子树（静态根节点：标签中除了文本内容以外，还需要包含其他标签）
    3. 调用generate()，生成字符串形式的js代码
 4. compileToFunctions(template,...)
    1. 调用createFunction()，将字符串形式的js代码转换为函数
@@ -273,3 +273,6 @@ AST：抽象语法树，使用对象的形式描述树形的代码结构，vue�
 
 ## 组件化
 
+组件在创建的时候，先创建父组件再创建子组件，而在挂载的时候，先挂载子组件再挂载父组件
+
+组件的粒度不是越小越好，抽象的过程要合理
