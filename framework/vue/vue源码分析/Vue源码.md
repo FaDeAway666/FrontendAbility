@@ -164,7 +164,39 @@ watcher类型的创建顺序也是：computed watcher --> user watcher --> rende
 
 ## 虚拟DOM
 
-总体过程：
+虚拟DOM是使用JS对象描述真实DOM，虚拟DOM的本质就是JS对象
+
+Vue.js中的虚拟DOM借鉴Snabbdom，并添加了Vue.js的特性，例如指令和组件机制
+
+为什么使用虚拟DOM：
+
+- 避免直接操作DOM，提高开发效率
+- 作为一个中间层，可以跨平台
+- 虚拟DOM在首屏的时候会增加开销，但在复杂视图的情况下会提升渲染性能
+
+### h函数
+
+vm.$createElement(tag, data, children, normalizeChildren)
+
+- tag
+  - 标签名称或组件对象
+- data
+  - 描述tag，可以设置DOM的属性或者标签的属性
+- children
+  - tag的文本内容或子节点
+
+VNode是h函数的返回值，也就是虚拟DOM
+
+核心属性：
+
+- tag
+- data
+- children
+- text
+- elm（对应的真实DOM）
+- key（标识，用来复用VNode)
+
+### 总体过程
 
 1. updateComponent中进行虚拟DOM的操作
 
@@ -265,9 +297,9 @@ AST：抽象语法树，使用对象的形式描述树形的代码结构，vue�
    2. 调用baseCompile(template.trim(), finalOptions)
 3. baseCompile(template.trim(), finalOptions)
    1. 调用parse()(来自于html-parse.js)，将template转换成AST
-   2. 调用optimize()，标记AST 中的静态子树，一旦检测到静态子树，将AST的static属性设置为true，则不需要再每次重新渲染的时候重新生成节点，在patch阶段，也会跳过静态子树（静态根节点：标签中除了文本内容以外，还需要包含其他标签）
+   2. 调用optimize()，标记AST 中的静态根节点，一旦检测到静态根节点，将AST的static属性设置为true，则不需要再每次重新渲染的时候重新生成节点，在patch阶段，也会跳过静态根节点（静态根节点：标签中除了文本内容以外，还需要包含其他标签）
    3. 调用generate()，生成字符串形式的js代码
-4. compileToFunctions(template,...)
+4. 回到compileToFunctions(template,...)
    1. 调用createFunction()，将字符串形式的js代码转换为函数
    2. 这时候render和staticRenderFns初始化完毕，挂载到Vue实例的options对应的属性中
 
