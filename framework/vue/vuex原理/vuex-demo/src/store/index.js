@@ -10,7 +10,8 @@ export default new Vuex.Store({
     },
     getters: {
         getReverseMsg: state => {
-            return state.msg.reverse()
+            let reverse = state.msg.split('').reverse()
+            return reverse.join('')
         }
     },
     mutations: {

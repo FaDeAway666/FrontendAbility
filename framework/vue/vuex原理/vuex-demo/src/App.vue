@@ -3,9 +3,14 @@
     <h1>Vuex demo</h1>
     <div>
       <h3>state</h3>
-      {{ $store.state.count }}
+      {{ $store.state.count }} ||
+      {{ $store.state.msg }}
       <h3>getters</h3>
       {{ $store.getters.getReverseMsg }}
+      <h3>mutations</h3>
+      <button @click="handleMutation">add 2</button>
+      <h3>actions</h3>
+      <button @click="handleAction">async add</button>
     </div>
     <h3></h3>
   </div>
@@ -20,7 +25,12 @@ export default {
     // HelloWorld
   },
   methods: {
-    
+    handleMutation () {
+      this.$store.commit('addCount', 2)
+    },
+    handleAction () {
+      this.$store.dispatch('asyncAddCount', 5)
+    }
   }
 }
 </script>
