@@ -1,5 +1,6 @@
 module.exports = {
   router: {
+    linkActiveClass: 'active', // nuxt-link active自定义样式
     extendRoutes(routes, resolve) {
       // console.log(routes)
       routes.splice(0) // 删除掉原本自动生成的路由配置

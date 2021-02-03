@@ -8,7 +8,7 @@
           <li class="nav-item">
             <!-- Add "active" class when you're on that page" -->
             <!-- <a class="nav-link active" href="">Home</a> -->
-            <nuxt-link class="nav-link active" to="/">Home</nuxt-link>
+            <nuxt-link class="nav-link" to="/" exact>Home</nuxt-link>
           </li>
           <li class="nav-item">
             <nuxt-link class="nav-link" to="/create">
