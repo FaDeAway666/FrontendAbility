@@ -12,12 +12,18 @@
           </p>
 
           <ul class="error-messages">
-            <li>That email is already taken</li>
+            <!-- <li>That email is already taken</li> -->
+            <!-- 处理登录注册错误信息 -->
+            <template v-for="(messages, target) in error">
+              <li v-for="message in messages" :key="message">
+                {{ target }} {{ message }}
+              </li>
+            </template>
           </ul>
 
           <form @submit.prevent="onSubmit">
             <fieldset class="form-group" v-if="!isLogin">
-              <input class="form-control form-control-lg" type="text" placeholder="Your Name">
+              <input v-model="user.username" class="form-control form-control-lg" type="text" placeholder="Your Name">
             </fieldset>
             <fieldset class="form-group">
               <input v-model="user.email" class="form-control form-control-lg" type="text" placeholder="Email">
@@ -38,8 +44,10 @@
 
 <script>
 import { login, register } from '@/api/user'
-import request from '@/utils/request'
+const Cookie = process.client ? require('js-cookie') : undefined
+
 export default {
+  middleware: 'unAuthenticated',
   name: 'loginPage',
   computed: {
     isLogin () {
@@ -49,28 +57,32 @@ export default {
   data () {
     return {
       user: {
+        username: '',
         email: '',
         password: ''
-      }
+      },
+      error: {}
     }
   },
   methods: {
     async onSubmit () {
-      // const data = this.isLogin ? await login({
-      //   user: this.user
-      // }) : await register({
-      //   user: this.user
-      // })
-
-      const data = await request({
-        method: 'POST',
-        url: '/api/user/login',
-        data: {
+      try {
+        const { data } = this.isLogin ? await login({
           user: this.user
-        }
-      })
+        }) : await register({
+          user: this.user
+        })
 
-      console.log(data, 'uresult')
+        console.log(data.user, 'user')
+        this.$store.commit('setUser', data.user)
+
+        Cookie.set('user', data.user)
+
+        this.$router.push('/')
+      } catch (e) {
+        this.error = e.response.data.errors
+      }
+
     }
   }
 }

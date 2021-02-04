@@ -50,6 +50,7 @@
 
 <script>
 export default {
+  middleware: 'authenticated',
   name: "createArticle",
 };
 </script>
