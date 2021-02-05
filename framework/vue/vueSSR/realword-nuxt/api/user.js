@@ -1,4 +1,5 @@
-import request from '../utils/request'
+// import request from '../utils/request'
+import { request } from '@/plugins/request'
 
 export const login = data => request({
   method: 'POST',
