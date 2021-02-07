@@ -32,3 +32,9 @@ export const cancleFavorite = slug => request({
   method: 'DELETE',
   url: `/api/articles/${slug}/favorite`
 })
+
+// 获取文章详情
+export const articleDetail = slug => request({
+  method: 'GET',
+  url: `/api/articles/${slug}`
+})
