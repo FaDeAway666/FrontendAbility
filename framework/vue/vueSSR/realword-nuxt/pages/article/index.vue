@@ -76,6 +76,14 @@ export default {
         }
       ]
     }
+  },
+  methods: {
+    handleFollow (flag) {
+      this.article.author.following = flag
+    },
+    handleFavorite (flag) {
+      this.article.favorited = flag
+    }
   }
 }
 </script>
