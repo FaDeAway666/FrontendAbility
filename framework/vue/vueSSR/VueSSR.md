@@ -125,3 +125,11 @@ asyncData方法：Nuxt扩展了Vue，使用asyncData 方法来接收异步操作
 - 没有this，因为是在组件初始化之前被调用的
 
 可以使用上下文对象来在使用asyncData时获取一些例如Vue实例的初始化参数
+
+CI/CD 服务
+
+持续集成，自动化部署
+
+原理如图
+
+![image-20210210112337731](.\images\CI.png)
