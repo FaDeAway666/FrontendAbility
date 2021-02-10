@@ -133,3 +133,20 @@ CI/CD 服务
 原理如图
 
 ![image-20210210112337731](.\images\CI.png)
+
+使用Github Actions来实现CI/CD
+
+1. 代码发布到GitHub
+2. 在GitHub中，用户--settings--Developer settings--Personal access tokens生成token
+3. 将token保存到项目--settings--secrets，新建一个secret，注意名称和token名称一致
+4. 配置GitHub actions执行脚本
+   1. 在项目根目录创建.github/workflows目录
+   2. 下载main.yml到workflows目录中
+   3. 修改配置
+   4. 配置PM2配置文件
+   5. 提交更新
+      1. 先提交代码
+      2. 新建tag  `git tag v1.0.0`
+      3. 推送代码到这个tag  `git push origin v1.0.0`
+   6. 查看自动部署状态
+   7. 访问网站
