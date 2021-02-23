@@ -11,13 +11,19 @@
     <div id="blue" style="width: 50%; height: 100px; background-color: lightblue;
      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);">子元素</div>
   </div>
-  <div id="scroll" style="width: 100px; height: 100px; border: 1px solid black;
+  <div id="scroll" style="margin-top: 30px; width: 100px; height: 100px; border: 1px solid black;
     overflow-y: auto;">
     测试文本测试文本测试文本测试文本测试文本测试文本
     测试文本测试文本测试文本测试文本测试文本测试文本
     测试文本测试文本测试文本测试文本测试文本测试文本
     测试文本测试文本测试文本测试文本测试文本测试文本
   </div>
+  <div id="range">
+    <p>第一行第一行第一行第一行第一行第一行</p>
+    <p>第二行第二行第二行第二行第二行第二行</p>
+    <p>第三行第三行第三行第三行第三行第三行</p>
+  </div>
+  <button onclick="reverseList()">翻转</button>
 </body>
 
 <script>
@@ -26,6 +32,7 @@
   var red = document.getElementById('red');
   var blue = document.getElementById('blue');
   var scr = document.getElementById('scroll');
+  var rangeEle = document.getElementById('range')
 
   red.addEventListener('click', function() {
     console.log('父元素被点击')
@@ -49,5 +56,25 @@
   scr.addEventListener('scroll', function() {
     console.log('scroll')
   }, { passive: true })
+
+  rangeEle.addEventListener('mouseup', function(e) {
+    var selectText = document.getSelection().toString()
+    var range = document.getSelection().getRangeAt(0)
+    console.log(selectText, range)
+  })
+
+  function reverseList () {
+    const list = document.getElementById('range')
+    const range = new Range()
+    range.selectNodeContents(list)
+
+    let fragment = range.extractContents()
+    let l = fragment.childNodes.length
+    while(l-- > 0) {
+        fragment.appendChild(fragment.childNodes[l]) // 因为 fragment也是一个living collection，所以可以直接往后添加前面的元素，会把元素直接后置
+    }
+
+    list.appendChild(fragment)
+  }
 </script>
 </html>
