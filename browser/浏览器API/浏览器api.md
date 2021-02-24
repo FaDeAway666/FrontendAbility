@@ -1,6 +1,46 @@
 # BOM
 
+是浏览器比较早期的一类API，主要功能是与浏览器产生交互，提供了独立于内容而与浏览器窗口进行交互的对象
 
+核心就是window对象
+
+主要的几个API
+
+- window.history
+
+  操作浏览记录
+
+  - history.back()
+  - history.go()
+
+- window.location
+
+  操作刷新按钮和地址栏
+
+  - location.host    设置或取得当前URL的主机名称和端口
+  - location.pathname    设置或取得当前URL的路径部分
+  - location.search    设置或取得当前URL的查询字符串
+  - location.href    返回整个URL
+  - location.hash    返回或设置URL hash字符串
+  - location.origin    返回当前域名
+
+- window.innerHeight/innerWidth
+
+  获取视窗高度和宽度
+
+- window.navigator
+
+  获取当前浏览器信息
+
+  - navigator.userAgent    获取发出HTTP请求的浏览器、设备等信息
+
+- window.open(url)
+
+  打开一个新的窗口，或查找一个已命名的窗口
+
+- window.top
+
+  返回最顶层页面
 
 # DOM
 
@@ -90,13 +130,63 @@ list.appendChild(fragment)
 
 ```
 
-
-
-
-
 # CSSOM
 
+是对CSS文档的一种抽象，入口则是document.styleSheets，是样式表的API形式，对应着文档内的style标签或link标签
 
+## cssRules
+
+cssRules属性是一个类似数组的集合，里面存放的是CSS Rules
+
+通过insertRule和removeRule向里面添加或移除rule
+
+例如：
+
+```js
+document.styleSheets[0].insertRule('p {color:pink}', 0)
+document.styleSheets[0].removeRule(0)
+```
+
+和rules相对应的API，和CSS rules基本相对应
+
+- CSSStyleRule    普通CSS Rules
+- CSSCharsetRule    @charset
+- CSSImportRule   @import
+- ......
+
+CSSOM的好处是可以通过js批量操作DOM元素的样式，或者通过js来操作伪元素的样式（伪元素无法获取其DOM结构）
+
+## getComputedStyle
+
+获取计算好的style样式，适合获取伪元素样式，拖拽场景，动画中间态
+
+```js
+getComputedStyle(document.querySelector('a'), '::before').color
+```
+
+## View
+
+CSSOM View部分是CSS图形在layout或render之后，产生的一系列API
+
+window.devicePixelRatio
+
+Scroll：
+
+- scrollTop
+- scrollLeft
+- scrollWidth
+- scrollHeight
+- scroll(x, y)
+- scrollBy(x, y)
+- scrollIntoView()    强制滚动到浏览器可见区域
+
+layout（比较重要）
+
+- getClientRects()    返回元素中所有盒子的边界矩形的矩形集合
+
+  返回值是ClientRect对象集合，该对象是与该元素相关的CSS边框。每个ClientRect对象包含一组描述该边框的只读属性——left、top、right和bottom
+
+- getBoundingClientRect()    返回元素的大小及其相对于视口的位置
 
 # 事件
 
