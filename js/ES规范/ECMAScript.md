@@ -603,5 +603,48 @@ String.prototype.padEnd
 
 ## async和await
 
+# ES2019
 
+## Array.prototype.flat/flatMap
+
+```js
+const arr = [1,[2,3,[4]]]
+
+arr.flat() // [1,2,3,[4]]
+arr.flat(2) // [1,2,3,4]
+arr.flat().flat() // [1,2,3,4]
+arr.flat(Infinity) // [1,2,3,4]
+
+const arr2 = [[1],[2],[3]]
+arr2.flatMap(x => x * 2) // [2,4,6]，等价于先flat(1)再执行map操作
+```
+
+## Object.fromEntries
+
+与Object.entries()方法相反，将一个key-value的集合转化成一个object
+
+```js
+const records = [['name','Mathew'], ['age', 32]];
+const obj = Object.fromEntries(records);
+> { name: 'Mathew', age: 32}
+```
+
+String.prototype.trimStart/trimEnd
+
+```js
+const greeting = ` Hello Javascript! `;
+greeting.length;
+> 19
+greeting = greeting.trimStart();
+> 'Hello Javascript! '
+greeting.length;
+> 18
+greeting = 'Hello World!   ';
+greeting.length;
+> 15
+greeting = greeting.trimEnd();
+> 'Hello World!'
+greeting.length;
+> 12
+```
 
