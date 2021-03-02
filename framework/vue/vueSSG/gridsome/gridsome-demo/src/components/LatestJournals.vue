@@ -5,7 +5,7 @@
         </div>
         <div class="latest-journals">
         <div class="container">
-            <g-link :to="item.node.path" class="journal" v-for="item in journals" :key="item.node.id">
+            <g-link :to="`/journal/${item.node.id}`" class="journal" v-for="item in journals" :key="item.node.id">
               <h3 class="journal-title">{{ item.node.title }}</h3>
             </g-link>
         </div>

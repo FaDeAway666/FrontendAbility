@@ -1,14 +1,21 @@
 <template>
     <div 
         class="journal-content"
-        v-html="content"
+        v-html="mdToHtml(content)"
     />
 </template>
 
 <script>
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt()
 export default {
     props: {
         content: String
+    },
+    methods: {
+        mdToHtml (content) {
+            return md.render(content)
+        }
     }
 }
 </script>

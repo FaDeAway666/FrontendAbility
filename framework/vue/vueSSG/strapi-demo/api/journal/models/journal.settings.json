@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "journals",
+  "info": {
+    "name": "journal"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "author": {
+      "type": "string"
+    },
+    "time": {
+      "type": "string"
+    }
+  }
+}
