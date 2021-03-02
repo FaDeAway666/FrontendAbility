@@ -17,7 +17,7 @@
     >
       <div class="container journal">
         <h2 class="journal-title">{{ item.node.title }}</h2>
-        <p class="journal-excerpt">{{ item.node.excerpt }}</p>
+        <p class="journal-excerpt">{{ item.node.author }}</p>
       </div>
     </g-link>
       
@@ -26,13 +26,12 @@
 
 <page-query>
 query Journal {
-	posts: allJournalPost {
+	posts: allStrapiJournal {
     edges {
       node {
         id
-        path
         title
-        excerpt
+        author
       }
     }
   }

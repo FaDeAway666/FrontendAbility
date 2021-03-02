@@ -12,11 +12,11 @@
             </div>
             <div class="journal-date">
               <span class="label">Date</span>
-              <div v-text="$page.post.date"/>
+              <div v-text="$page.post.created_at"/>
             </div>
             <div class="journal-time">
               <span class="label">Time</span>
-              <span>{{ $page.post.timeToRead }} min read</span>
+              <span>{{ $page.post.time }} min read</span>
             </div>
           </div>          
         </div>
@@ -29,12 +29,12 @@
 </template>
 
 <page-query>
-query JournalPost ($path: String!) {
-  post: journalPost (path: $path) {
+query ($id: ID!) {
+  post: strapiJournal (id: $id) {
     title
     author
-    date (format: "D. MMMM YYYY")
-    timeToRead
+    created_at (format: "D. MMMM YYYY")
+    time
     content
   }
 }

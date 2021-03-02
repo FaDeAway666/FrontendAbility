@@ -22,11 +22,10 @@ query posts {
       }
     }
   },
-  journals: allJournalPost (perPage: 4) {
+  journals: allStrapiJournal {
     edges {
       node {
         id
-        path
         title
       }
     }
