@@ -31,7 +31,8 @@ export const reactive = target => {
             // setter 生效之后，再触发，不然还是之前的值
             trigger(target, key)
             return result
-        } else return oldV
+        } 
+        else return oldV
     }
 
     const deleteHandler = (target, key) => {
@@ -93,4 +94,29 @@ const trigger = (target, key) => {
     deps.forEach(effect => {
         effect()
     })
+}
+
+export const ref = raw => {
+
+    if (isObject(raw) && raw.__v_isRef) return
+
+    // 使用convert处理raw值，如果是对象，返回代理
+    let value = convert(raw)
+
+    const result = {
+        __v_isRef: true,
+        get value() {
+            track(value, 'value')
+            return value
+        },
+        set value(newValue) {
+            if (newValue !== value) {
+                newValue = convert(newValue)
+                result.value = newValue
+                trigger(result, 'value')
+            }
+        }
+    }
+
+    return result
 }
